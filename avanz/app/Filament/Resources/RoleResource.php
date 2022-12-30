@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CountryResource\Pages;
-use App\Filament\Resources\CountryResource\RelationManagers;
-use App\Filament\Resources\CountryResource\RelationManagers\EmployeesRelationManager;
-use App\Models\Country;
+use App\Filament\Resources\RoleResource\Pages;
+use App\Filament\Resources\RoleResource\RelationManagers;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -13,39 +11,38 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
 
-
-class CountryResource extends Resource
+class RoleResource extends Resource
 {
-    protected static ?string $model = Country::class;
+    protected static ?string $model = Role::class;
+    protected static ?string $navigationGroup = 'User Management';
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationGroup = 'System Management';
-
 
     public static function form(Form $form): Form
     {
         return $form
+        ->schema([
+            Card::make()
             ->schema([
-                Card::make()
-                ->schema([
-                    TextInput::make('country_code'),
-                    TextInput::make('name')
-                ])
-            ]);
+                TextInput::make('name'),
+                Select::make('permissions')
+                    ->relationship('permissions', 'name')->preload()
+                    ->multiple(),
+            ])
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('country_code')->sortable()->searchable(),
                 TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
                 //
@@ -61,16 +58,16 @@ class CountryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            EmployeesRelationManager::class,
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCountries::route('/'),
-            'create' => Pages\CreateCountry::route('/create'),
-            'edit' => Pages\EditCountry::route('/{record}/edit'),
+            'index' => Pages\ListRoles::route('/'),
+            'create' => Pages\CreateRole::route('/create'),
+            'edit' => Pages\EditRole::route('/{record}/edit'),
         ];
     }
 }

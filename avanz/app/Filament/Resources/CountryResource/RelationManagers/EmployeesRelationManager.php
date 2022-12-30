@@ -10,9 +10,9 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EmployeeRelationManager extends RelationManager
+class EmployeesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'employee';
+    protected static string $relationship = 'employees';
 
     protected static ?string $recordTitleAttribute = 'first_name';
 
@@ -45,5 +45,5 @@ class EmployeeRelationManager extends RelationManager
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
+    }    
 }
